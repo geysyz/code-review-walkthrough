@@ -8,18 +8,28 @@ DISCOUNT_RATES = {
     "vip": 0.2,
     "staff": 0.3,
 }
-def process_order(customer_type, items, email):
+
+class ReceiptMailer:
+    def __init__(self, host="localhost", port=2525):
+        self.host = host
+        self.port = port
+
+    def send(self, email, total):
+        s = smtplib.SMTP(self.host, self.port)
+        s.login("shop@example.com", SMTP_PASSWORD)
+        s.sendmail("shop@example.com", email, f"Your total is {total}")
+
+def process_order(customer_type, items, email, mailer =None):
     subtotal = sum(i["price"] * i["qty"] for i in items)
     discount = DISCOUNT_RATES.get(customer_type, 0.0)
     total = subtotal * (1 - discount)
     total = total + total * 0.0825
+    mailer = mailer or ReceiptMailer()
     
-    
+ 
     try:
-        s = smtplib.SMTP("localhost", 2525)
-        s.login("shop@example.com", SMTP_PASSWORD)
-        s.sendmail("shop@example.com", email, "Your total is " + str(total))
-    except:
+        mailer.send(email, total)
+    except Exception:
         pass
-    print("Receipt: " + str(total))
+    print(f"Receipt: {total}")
     return total
