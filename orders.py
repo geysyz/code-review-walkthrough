@@ -6,7 +6,7 @@ DISCOUNT_RATES = {
     "regular": 0.0,
     "member": 0.1,
     "vip": 0.2,
-    "staff": 0.3,
+    STAFF_DISCOUNT_RATE: 0.7,
 }
 
 class ReceiptMailer:
